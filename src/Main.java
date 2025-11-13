@@ -29,10 +29,29 @@ public class Main{
             user = scanner.nextLine().toLowerCase().trim();
             if(user.equals("стоп")){
                 System.out.println("Бот-викторина остановлен!");
+                scanner.close();
                 return;
             }
-
+            mixingOfQuestion(questions,random);
+            for(int i=0; i< questions.length;i++){
+                System.out.println("Вопрос: "+ questions[i][0]);
+                System.out.print("Твой ответ: ");
+                user = scanner.nextLine().toLowerCase().trim();
+                if(questions[i][1].equals(user)){
+                    System.out.println("Верно!");
+                }
+                else{
+                    System.out.println("Неверно!");
+                }
+            }
         }
-
+    }
+    public static void mixingOfQuestion(String[][] questions, Random random){
+        for (int i = questions.length - 1; i > 0; i--) {
+            int j = random.nextInt(i + 1);
+            String[] temp = questions[i];
+            questions[i] = questions[j];
+            questions[j] = temp;
+        }
     }
 }
