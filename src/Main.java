@@ -25,23 +25,22 @@ public class Main{
 
         String user;
         while(true){
-            System.out.println("Хочешь продолжить?");
-            user = scanner.nextLine().toLowerCase().trim();
-            if(user.equals("стоп")){
-                System.out.println("Бот-викторина остановлен!");
-                scanner.close();
-                return;
-            }
             mixingOfQuestion(questions,random);
             for(int i=0; i< questions.length;i++){
                 System.out.println("Вопрос: "+ questions[i][0]);
                 System.out.print("Твой ответ: ");
                 user = scanner.nextLine().toLowerCase().trim();
-                if(questions[i][1].equals(user)){
-                    System.out.println("Верно!");
+                if(user.equals("стоп")){
+                    System.out.println("Бот-викторина остановлен!");
+                    scanner.close();
+                    return;
                 }
-                else{
-                    System.out.println("Неверно!");
+                else {
+                    if (questions[i][1].equals(user)) {
+                        System.out.println("Верно!");
+                    } else {
+                        System.out.println("Неверно!");
+                    }
                 }
             }
         }
