@@ -10,16 +10,16 @@ public class Main{
                 {}
         };
 
-        System.out.println("Hi! This is a console quiz bot!");
-        System.out.println("He will ask questions until you decide to stop!");
-        System.out.println("When you decide to finish, write a 'stop'!");
+        System.out.println("Привет! Это консольный бот - викторина!");
+        System.out.println("Он будет задавать вопросы, пока ты не решишь остановиться!");
+        System.out.println("Когда решишь закончить напиши 'стоп'!");
 
         String user;
         while(true){
-            System.out.println("Do you want to continue?");
+            System.out.println("Хочешь продолжить?");
             user = scanner.nextLine().toLowerCase().trim();
-            if(user.equals("stop")){
-                System.out.println("The quiz bot has been stopped!");
+            if(user.equals("стоп")){
+                System.out.println("Бот-викторина остановлен!");
                 return;
             }
 
