@@ -17,12 +17,12 @@ public class Quiz {
                 System.out.println("Вопрос: "+ questions[i][0]);
                 System.out.print("Твой ответ: ");
                 user = scanner.nextLine().toLowerCase().trim();
-                if(user.equals("стоп")){
+                if(user.equals("/стоп")){
                     System.out.println("Бот-викторина остановлен!");
                     scanner.close();
                     return;
                 }
-                else if(user.equals("помощь")){
+                else if(user.equals("/помощь")){
                     System.out.println(CommandHelp.help());
                 }
                 else {
