@@ -1,6 +1,10 @@
 import java.util.Random;
 import java.util.Scanner;
 import commands.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.io.IOException;
 
 public class Quiz {
     public void run(){
@@ -46,6 +50,22 @@ public class Quiz {
     }
 
     public static String[][] readingFile(String fileName){
-        return new String[][];
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(fileName));
+            String[][] questionsArray = new String[lines.size()][2];
+            int validCount = 0;
+            for (String line : lines) {
+                String[] parts = line.split("\\|", 2);
+                if (parts.length >= 2) {
+                    questionsArray[validCount][0] = parts[0].trim();
+                    questionsArray[validCount][1] = parts[1].trim().toLowerCase();
+                    validCount++;
+                }
+            }
+            return questionsArray;
+        } catch (IOException e) {
+            System.err.println("Ошибка при чтении файла: " + e.getMessage());
+            return new String[0][0];
+        }
     }
 }
