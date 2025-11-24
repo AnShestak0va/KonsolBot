@@ -1,26 +1,30 @@
 import java.util.Random;
 import java.util.Scanner;
-import commands.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+import commands.*;
 
 public class Quiz {
     public void run(){
         Scanner scanner = new Scanner(System.in);
-        Random random  = new Random();
+        Random random = new Random();
 
-        String[][] questions = readingFile("questions.txt");
+        Map<String, List<String>> questions = readingFile("questions.txt");
         System.out.println(CommandGreeting.greeting());
 
         String user;
         while(true){
-            mixingOfQuestion(questions,random);
-            for(int i=0; i< questions.length;i++){
-                System.out.println("Вопрос: "+ questions[i][0]);
+            List<Map.Entry<String, List<String>>> shuffledQuestions = mixingOfQuestion(questions, random);
+            for(Map.Entry<String, List<String>> entry : shuffledQuestions){
+                System.out.println("Вопрос: " + entry.getKey());
                 System.out.print("Твой ответ: ");
                 user = scanner.nextLine().toLowerCase().trim();
+
                 if(user.equals("/стоп")){
                     System.out.println("Бот-викторина остановлен!");
                     scanner.close();
@@ -28,44 +32,52 @@ public class Quiz {
                 }
                 else if(user.equals("/помощь")){
                     System.out.println(CommandHelp.help());
+                    continue;
                 }
-                else {
-                    if (questions[i][1].equals(user)) {
-                        System.out.println("Верно!");
-                    } else {
-                        System.out.println("Неверно!");
-                    }
+                if (entry.getValue().contains(user)) {
+                    System.out.println("Верно!");
+                } else {
+                    System.out.println("Неверно!");
                 }
+                System.out.println();
             }
         }
     }
 
-    public static void mixingOfQuestion(String[][] questions, Random random){
-        for (int i = questions.length - 1; i > 0; i--) {
+    public static List<Map.Entry<String, List<String>>> mixingOfQuestion(
+            Map<String, List<String>> questions, Random random){
+        List<Map.Entry<String, List<String>>> entries = new ArrayList<>(questions.entrySet());
+        for (int i = entries.size() - 1; i > 0; i--) {
             int j = random.nextInt(i + 1);
-            String[] temp = questions[i];
-            questions[i] = questions[j];
-            questions[j] = temp;
+            Map.Entry<String, List<String>> temp = entries.get(i);
+            entries.set(i, entries.get(j));
+            entries.set(j, temp);
         }
+        return entries;
     }
 
-    public static String[][] readingFile(String fileName){
+    public static Map<String, List<String>> readingFile(String fileName) {
         try {
             List<String> lines = Files.readAllLines(Paths.get(fileName));
-            String[][] questionsArray = new String[lines.size()][2];
-            int validCount = 0;
+            Map<String, List<String>> questionsMap = new HashMap<>();
             for (String line : lines) {
                 String[] parts = line.split("\\|", 2);
                 if (parts.length >= 2) {
-                    questionsArray[validCount][0] = parts[0].trim();
-                    questionsArray[validCount][1] = parts[1].trim().toLowerCase();
-                    validCount++;
+                    String key = parts[0].trim();
+                    // Разделяем варианты ответов и убираем пробелы
+                    String[] answers = parts[1].split("\\|");
+                    List<String> answerList = new ArrayList<>();
+                    for (String answer : answers) {
+                        answerList.add(answer.trim().toLowerCase()); // сохраняем в нижнем регистре
+                    }
+                    questionsMap.put(key, answerList);
                 }
             }
-            return questionsArray;
-        } catch (IOException e) {
+            return questionsMap;
+        }
+        catch (IOException e) {
             System.err.println("Ошибка при чтении файла: " + e.getMessage());
-            return new String[0][0];
+            return new HashMap<>();
         }
     }
 }
